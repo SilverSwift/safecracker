@@ -20,7 +20,7 @@ MainWidget::MainWidget(QWidget *parent) : QMainWindow(parent)
 
 void MainWidget::onFinished()
 {
-    QMessageBox::information(this, tr("Completed!"), tr("Congratulations! Level completed!"));
+    QMessageBox::information(this, tr("Completed!"), stats->result());
     this->startNewGame();
 }
 
@@ -38,7 +38,7 @@ void MainWidget::startNewGame()
 
 void MainWidget::onUpdatePoints()
 {
-    this->statusBar()->showMessage(stats->shortResult());
+    this->statusBar()->showMessage(stats->statusInfo());
 }
 
 void MainWidget::initComponents()

@@ -13,6 +13,7 @@ Stats::Stats(QObject *parent) : QObject(parent)
 
 void Stats::onFinished()
 {
+    mStarted = false;
     mGameTime = mTime.elapsed()/1000;
 }
 
@@ -23,6 +24,7 @@ void Stats::onPressed()
 
 void Stats::onStarted()
 {
+    mStarted = true;
     mTime.start();
     mGameTime = 0;
     mTurns = 0;
@@ -35,8 +37,8 @@ void Stats::setName(QString name)
 
 int Stats::points()
 {
-    int time = mGameTime ? mGameTime : mTime.elapsed()/100;
-    return qMax(mMaxPoints - time - mTurns*100, 0);
+    int time = mGameTime ? mGameTime : mTime.elapsed()/1000;
+    return qMax(mMaxPoints - time - mTurns, 0);
 }
 
 QString Stats::result()
@@ -45,8 +47,10 @@ QString Stats::result()
               "You've did it in %3 seconds!").arg(mName).arg(this->points()).arg(mGameTime);
 }
 
-QString Stats::shortResult()
+QString Stats::statusInfo()
 {
-    return tr("Points: %1").arg(this->points());
+    if (mStarted)
+        return tr("Points: %1").arg(this->points());
+    return tr("Press Game->New game to start");
 }
 

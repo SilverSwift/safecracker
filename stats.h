@@ -14,7 +14,7 @@ public:
 
     int points();
     QString result();
-    QString shortResult();
+    QString statusInfo();
 
 signals:
     void updatePoints();
@@ -29,8 +29,9 @@ private:
     QTime mTime;
     int mGameTime;
     int mTurns;
-    const int mMaxPoints = 1000000;
+    const int mMaxPoints = 10000;
     QString mName;
+    bool mStarted = false;
 };
 
 }
