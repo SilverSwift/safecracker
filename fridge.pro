@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = fridge
+TARGET = safecracker
 
 QMAKE_CXXFLAGS += -std=c++14
 
@@ -14,7 +14,10 @@ SOURCES += \
     galetteswitch.cpp \
     animatedswitch.cpp \
     menubar.cpp \
-    stats.cpp
+    stats.cpp \
+    startgamedialog.cpp \
+    ratingmodel.cpp \
+    ratingdialog.cpp
 
 HEADERS += \
     mainwidget.h \
@@ -23,7 +26,10 @@ HEADERS += \
     animatedswitch.h \
     presentation_traits.h \
     menubar.h \
-    stats.h
+    stats.h \
+    startgamedialog.h \
+    ratingmodel.h \
+    ratingdialog.h
 
 RESOURCES += \
     main.qrc

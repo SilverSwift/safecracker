@@ -2,9 +2,13 @@
 #include "menubar.h"
 #include "fridge.h"
 #include "presentation_traits.h"
+#include "ratingdialog.h"
+#include "ratingmodel.h"
 #include "stats.h"
+#include "startgamedialog.h"
 
 #include <QInputDialog>
+#include <QLabel>
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QVBoxLayout>
@@ -12,33 +16,45 @@
 using namespace presentation;
 
 MainWidget::MainWidget(QWidget *parent) : QMainWindow(parent)
-  , fridgeItem (new fridge::Fridge())
-  , stats (new domain::Stats(this))
+  , pFridgeItem (new fridge::Fridge())
+  , pStats (new domain::Stats(this))
+  , pModel (new domain::RatingModel(this))
 {  
     this->initComponents();
+    this->statusBar()->addPermanentWidget(new QLabel(intro, this->statusBar()));
+}
+
+void MainWidget::onGameStatsTriggered()
+{
+    RatingDialog(pModel).exec();
 }
 
 void MainWidget::onFinished()
 {
-    QMessageBox::information(this, tr("Completed!"), stats->result());
+    pStats->onFinished();
+    pModel->addResult(pStats->name(), pStats->gameTime(), pStats->points());
+    QMessageBox::information(this, tr("Completed!"), pStats->result());
     this->startNewGame();
 }
 
 void MainWidget::startNewGame()
 {
-    bool ok;
-    int size = QInputDialog::getInt(this, tr("Select field size"), tr("Field size:"),
-                         minSize, minSize, maxSize, 1, &ok);
-    if (!ok)
+
+    StartGameDialog dialog;
+    if (dialog.exec() == QDialog::Rejected)
         return;
 
-    fridgeItem->initialize(size);
+    pStats->setName(dialog.playerName());
+
+    int size = dialog.fieldSize();
+
+    pFridgeItem->initialize(size);
 
 }
 
 void MainWidget::onUpdatePoints()
 {
-    this->statusBar()->showMessage(stats->statusInfo());
+    this->statusBar()->showMessage(pStats->statusInfo());
 }
 
 void MainWidget::initComponents()
@@ -46,37 +62,39 @@ void MainWidget::initComponents()
     MenuBar* menu = new MenuBar();
     this->setMenuBar(menu);
 
-    this->setCentralWidget(fridgeItem);
+    this->setCentralWidget(pFridgeItem);
 
     this->setStatusBar(new QStatusBar());
 
-    connect(fridgeItem, &fridge::Fridge::canRedoChanged,
+    connect(pFridgeItem, &fridge::Fridge::canRedoChanged,
             menu, &MenuBar::enableRedo);
-    connect(fridgeItem, &fridge::Fridge::canUndoChanged,
+    connect(pFridgeItem, &fridge::Fridge::canUndoChanged,
             menu, &MenuBar::enableUndo);
 
-    emit fridgeItem->canRedoChanged(fridgeItem->canRedo());
-    emit fridgeItem->canUndoChanged(fridgeItem->canUndo());
+    emit pFridgeItem->canRedoChanged(pFridgeItem->canRedo());
+    emit pFridgeItem->canUndoChanged(pFridgeItem->canUndo());
 
     connect(menu, &MenuBar::redoTriggered,
-            fridgeItem, &fridge::Fridge::redo);
+            pFridgeItem, &fridge::Fridge::redo);
 
     connect(menu, &MenuBar::undoTriggered,
-            fridgeItem, &fridge::Fridge::undo);
+            pFridgeItem, &fridge::Fridge::undo);
 
     connect(menu, &MenuBar::newGameTriggered,
             this, &MainWidget::startNewGame);
-    connect(fridgeItem, &fridge::Fridge::finished,
+    connect(pFridgeItem, &fridge::Fridge::finished,
             this, &MainWidget::onFinished);
 
-    connect(fridgeItem, &fridge::Fridge::started,
-            stats, &domain::Stats::onStarted);
-    connect(fridgeItem, &fridge::Fridge::finished,
-            stats, &domain::Stats::onFinished);
-    connect(fridgeItem, &fridge::Fridge::pressed,
-            stats, &domain::Stats::onPressed);
+    connect(pFridgeItem, &fridge::Fridge::started,
+            pStats, &domain::Stats::onStarted);
 
-    connect(stats, &domain::Stats::updatePoints,
+    connect(pFridgeItem, &fridge::Fridge::pressed,
+            pStats, &domain::Stats::onPressed);
+
+    connect(pStats, &domain::Stats::updatePoints,
             this, &MainWidget::onUpdatePoints);
+
+    connect(menu, &MenuBar::gameStatsTriggered,
+            this, &MainWidget::onGameStatsTriggered);
 
 }

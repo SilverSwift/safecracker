@@ -19,7 +19,6 @@ public:
 
 public slots:
     void setRotation(int angle);
-    void lock(bool locked = true);
 
 signals:
     void pressed();
@@ -31,7 +30,6 @@ protected:
 
 private:
     int mAngle = 0;
-    bool mLocked = false;
 
 };
 

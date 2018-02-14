@@ -11,6 +11,16 @@ Stats::Stats(QObject *parent) : QObject(parent)
     connect(timer, &QTimer::timeout, this, &Stats::updatePoints);
 }
 
+QString Stats::name() const
+{
+    return mName;
+}
+
+int Stats::gameTime() const
+{
+    return mGameTime;
+}
+
 void Stats::onFinished()
 {
     mStarted = false;
@@ -35,7 +45,7 @@ void Stats::setName(QString name)
     mName = name;
 }
 
-int Stats::points()
+int Stats::points() const
 {
     int time = mGameTime ? mGameTime : mTime.elapsed()/1000;
     return qMax(mMaxPoints - time - mTurns, 0);
@@ -51,6 +61,6 @@ QString Stats::statusInfo()
 {
     if (mStarted)
         return tr("Points: %1").arg(this->points());
-    return tr("Press Game->New game to start");
+    return QString();
 }
 

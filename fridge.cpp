@@ -1,5 +1,6 @@
 #include "fridge.h"
 #include "animatedswitch.h"
+#include "presentation_traits.h"
 
 #include <QGridLayout>
 #include <QPainter>
@@ -16,8 +17,9 @@ Fridge::Fridge(QWidget *parent) : QWidget(parent)
   , grid (new QGridLayout())
   , panel(new QWidget(this))
 {
+    grid->setHorizontalSpacing(0);
+    grid->setVerticalSpacing(0);
     panel->setLayout(grid);
-
     std::srand(unsigned(std::time(0)));
 
 }
@@ -34,6 +36,8 @@ bool Fridge::canUndo() const
 
 void Fridge::onPressed(QPoint position)
 {
+    if (mLocked)
+        return;
     this->press(position);
 
     mLastActions<<position;
@@ -45,8 +49,11 @@ void Fridge::onPressed(QPoint position)
 
 void Fridge::onTriggered(QPoint position)
 {
-    this->triggerRow(position);
-    this->triggerColumn(position);
+
+    bool triggered = this->triggerRow(position);
+    triggered |= this->triggerColumn(position);
+
+    this->lock(triggered);
 }
 
 void Fridge::redo()
@@ -83,7 +90,7 @@ void Fridge::paintEvent(QPaintEvent *event)
                             QPainter::TextAntialiasing |
                             QPainter::SmoothPixmapTransform);
 
-    QPixmap pixmap(":/icons/fridge.png");
+    QPixmap pixmap(":/icons/fridge3.png");
     painter.drawPixmap(this->rect(), pixmap);
 
     QWidget::paintEvent(event);
@@ -91,26 +98,34 @@ void Fridge::paintEvent(QPaintEvent *event)
 
 void Fridge::resizeEvent(QResizeEvent *event)
 {
-
     int w = this->width();
     int h = this->height();
 
-    QRect rect(w*0.21, h*0.2,
-               w*0.6, h*0.6);
+    QRect rect(w*0.275, h*0.15,
+               w*0.375, h*0.7);
 
     panel->setGeometry(rect);
 
     QWidget::resizeEvent(event);
 }
 
-void Fridge::checkState() const
+void Fridge::checkState()
 {
+    if (!mNeedToCheck)
+        return;
+
+    mNeedToCheck = false;
+
+    if (mLocked)
+        return;
+
     foreach (QVector<AnimatedSwitch*> row, mItems) {
         foreach (AnimatedSwitch* item, row){
             if (item->orientation() != Qt::Horizontal)
                 return;
         }
     }
+
     emit finished();
 }
 
@@ -132,15 +147,20 @@ void Fridge::initialize(int size)
 
     for (int row = 0 ; row < size; row++){
         for(int column = 0; column < size; column++){
-            Qt::Orientation orientation = (std::rand() % 2 ) ?
-                        Qt::Vertical :
-                        Qt::Horizontal;
+            Qt::Orientation orientation =
+                    (std::rand() % 2 ) ? Qt::Vertical : Qt::Horizontal;
 
-            AnimatedSwitch* item = new fridge::AnimatedSwitch(orientation, QPoint(row, column));
+            AnimatedSwitch* item =
+                    new fridge::AnimatedSwitch(orientation, QPoint(row, column));
+
             grid->addWidget(item, row, column);
             mItems[row][column] = item;
-            connect(item, &AnimatedSwitch::triggered, this, &Fridge::onTriggered);
-            connect(item, &AnimatedSwitch::pressed, this, &Fridge::onPressed);
+
+            connect(item, &AnimatedSwitch::triggered,
+                    this, &Fridge::onTriggered);
+
+            connect(item, &AnimatedSwitch::pressed,
+                    this, &Fridge::onPressed, Qt::DirectConnection);
         }
     }
 
@@ -150,16 +170,20 @@ void Fridge::initialize(int size)
 
 void Fridge::lock(bool locked)
 {
-    mLocked = locked;
+    if (!locked && mLocked){
+        mNeedToCheck = true;
+        QTimer::singleShot(fridge::duration, this, &Fridge::checkState);
+    }
 
+    mLocked = locked;
+    this->setEnabled(!locked);
     emit canRedoChanged(this->canRedo());
     emit canUndoChanged(this->canUndo());
+
     foreach (QVector<AnimatedSwitch*> row, mItems) {
         foreach (AnimatedSwitch* item, row)
-            emit item->lock(locked);
+            item->lock(locked);
     }
-    if (!locked)
-        this->checkState();
 }
 
 void Fridge::press(QPoint position)
@@ -170,35 +194,39 @@ void Fridge::press(QPoint position)
     emit pressed();
 }
 
-void Fridge::triggerColumn(QPoint position)
+bool Fridge::triggerColumn(QPoint position)
 {
     int column = position.y();
     int pressedColumn = mPressedPosition.y();
 
     if (column != pressedColumn)
-        return;
+        return false;
 
     int row = position.x();
     int pressedRow = mPressedPosition.x();
 
+    bool triggered = false;
+
     if (row == pressedRow){
-        this->tryTrigger(row + 1, column);
-        this->tryTrigger(row - 1, column);
+        triggered |= this->tryTrigger(row + 1, column);
+        triggered |= this->tryTrigger(row - 1, column);
 
     }
     else if(row < pressedRow)
-        this->tryTrigger(row - 1, column);
+        triggered |= this->tryTrigger(row - 1, column);
     else
-        this->tryTrigger(row + 1, column);
+        triggered |= this->tryTrigger(row + 1, column);
+
+    return triggered;
 }
 
-void Fridge::triggerRow(QPoint position)
+bool Fridge::triggerRow(QPoint position)
 {
 
     int row = position.x();
     int pressedRow = mPressedPosition.x();
     if (row != pressedRow)
-        return;
+        return false;
 
     int column = position.y();
     int pressedColumn = mPressedPosition.y();
@@ -214,9 +242,7 @@ void Fridge::triggerRow(QPoint position)
     else
         triggered |= this->tryTrigger(row, column + 1);
 
-    if (!triggered)
-        this->lock(false);
-
+    return triggered;
 }
 
 bool Fridge::tryTrigger(QPoint point)

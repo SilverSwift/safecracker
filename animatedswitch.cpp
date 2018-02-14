@@ -22,8 +22,8 @@ AnimatedSwitch::AnimatedSwitch(Qt::Orientation orientation,
     this->initComponents();
     this->initStateMachine();
 
-    connect(item, &GaletteSwitch::pressed, this, [=](){emit pressed(mPosition);});
-    connect(this, &AnimatedSwitch::lock, item, &GaletteSwitch::lock);
+    connect(item, &GaletteSwitch::pressed,
+            this, [=](){if (!mLocked) emit pressed(mPosition);});
 
     QState* state = (orientation == Qt::Vertical) ? vState : hState;
     machine->setInitialState(state);
@@ -50,6 +50,11 @@ void AnimatedSwitch::setOrientation(Qt::Orientation orientation)
     if (orientation == this->orientation())
         return;
     this->trigger();
+}
+
+void AnimatedSwitch::lock(bool locked)
+{
+    mLocked = locked;
 }
 
 void AnimatedSwitch::onTransitionFinished()

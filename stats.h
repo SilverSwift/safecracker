@@ -12,7 +12,9 @@ class Stats : public QObject
 public:
     explicit Stats(QObject *parent = 0);
 
-    int points();
+    QString name() const;
+    int points() const;
+    int gameTime() const;
     QString result();
     QString statusInfo();
 

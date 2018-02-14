@@ -41,13 +41,15 @@ protected:
     virtual void paintEvent(QPaintEvent* event) override;
     virtual void resizeEvent(QResizeEvent *event) override;
 
+private slots:
+    void checkState();
+
 private:
 
-    void checkState() const;
     void lock(bool locked = true);
     void press(QPoint point);
-    void triggerColumn(QPoint position);
-    void triggerRow(QPoint position);
+    bool triggerColumn(QPoint position);
+    bool triggerRow(QPoint position);
     bool tryTrigger(QPoint point);
     bool tryTrigger(int row, int column);
 
@@ -58,7 +60,7 @@ private:
     QStack <QPoint> mLastActions;
     QStack <QPoint> mCanceledActions;
 
-
+    bool mNeedToCheck = false;
     bool mLocked = false;
 
 

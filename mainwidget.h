@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 namespace domain{
+    class RatingModel;
     class Stats;
 }
 
@@ -21,6 +22,7 @@ public:
 signals:
 
 private slots:
+    void onGameStatsTriggered();
     void onFinished();
     void startNewGame();
     void onUpdatePoints();
@@ -28,8 +30,9 @@ private slots:
 private:
     void initComponents();
 
-    fridge::Fridge* fridgeItem;
-    domain::Stats* stats;
+    fridge::Fridge* pFridgeItem;
+    domain::Stats* pStats;
+    domain::RatingModel* pModel;
 
 };
 
