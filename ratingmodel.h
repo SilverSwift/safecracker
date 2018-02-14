@@ -1,8 +1,11 @@
 #ifndef RATINGMODEL_H
 #define RATINGMODEL_H
 
+#include "common_traits.h"
+
 #include <QAbstractTableModel>
 #include <QHash>
+#include <QVector>
 
 namespace domain{
 
@@ -10,14 +13,6 @@ class RatingModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-
-    enum Columns{
-        id,
-        UserName,
-        RoundTime,
-        Points,
-        DateTime
-    };
 
     explicit RatingModel(QObject *parent = 0);
     ~RatingModel();
@@ -31,24 +26,22 @@ public:
     int rowCount(const QModelIndex &parent) const override;
 
 public slots:
-    bool addResult(QString userName, int time, int points);
+    void addResult(QString userName, int time, int points);
 
 private:
     bool loadData();
     bool saveData();
-
-    int getId() const;
+    void sortUsers();
 
     QJsonArray usersArray() const;
 
-    QHash <int, QObject* > mItems;
+    QVector <QObject*> mItems;
 
     const QHash <int, const char*> mProperties = {
-        {id, "id"},
-        {UserName, "UserName"},
-        {RoundTime, "RoundTime"},
-        {Points, "Points"},
-        {DateTime, "DateTime"}
+        {Columns::UserName, "UserName"},
+        {Columns::RoundTime, "RoundTime"},
+        {Columns::Points, "Points"},
+        {Columns::DateTime, "DateTime"}
     };
 
     bool mLoaded = false;

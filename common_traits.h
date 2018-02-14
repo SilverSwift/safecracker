@@ -8,10 +8,8 @@
 #include <QStandardPaths>
 
 namespace fridge{
-    const int duration = 50;
     const int hRotation = 0;
     const int vRotation = -90;
-
 }
 
 namespace presentation{
@@ -24,7 +22,17 @@ namespace presentation{
 
 namespace domain{
 
+    enum Columns{
+        UserName = 0,
+        RoundTime,
+        Points,
+        DateTime
+    };
+
+
+    const int defaultDuration = 500;
     const QString usersArrayKey ("Users");
+    const QString durationKey ("Duration");
     const QString appData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     const QFileInfo appDataFile(QDir(appData), "data.json");
     const QString ratingFilePath(appDataFile.absoluteFilePath());

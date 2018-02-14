@@ -1,6 +1,7 @@
 #include "fridge.h"
 #include "animatedswitch.h"
-#include "presentation_traits.h"
+#include "common_traits.h"
+#include "settingsholder.h"
 
 #include <QGridLayout>
 #include <QPainter>
@@ -172,7 +173,7 @@ void Fridge::lock(bool locked)
 {
     if (!locked && mLocked){
         mNeedToCheck = true;
-        QTimer::singleShot(fridge::duration, this, &Fridge::checkState);
+        QTimer::singleShot(domain::SettingsHolder::instance().duration(), this, &Fridge::checkState);
     }
 
     mLocked = locked;

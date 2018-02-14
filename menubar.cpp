@@ -21,6 +21,7 @@ void MenuBar::enableUndo(bool enabled)
 QMenu* MenuBar::fileMenu()
 {
     QMenu* file = new QMenu(tr("File"), this);
+    file->addAction(tr("Settings"), this, SIGNAL(settingsTriggered()));
     file->addAction(tr("Quit"), qApp, SLOT(quit()), QKeySequence::Quit);
 
     return file;

@@ -1,5 +1,4 @@
 #include "ratingmodel.h"
-#include "presentation_traits.h"
 
 #include <QAbstractItemModel>
 #include <QDateTime>
@@ -9,6 +8,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSharedPointer>
+
+#include <algorithm>
 
 using namespace domain;
 
@@ -25,7 +26,7 @@ RatingModel::~RatingModel()
 
 int RatingModel::columnCount(const QModelIndex& ) const
 {
-    return mProperties.count() - 1;
+    return mProperties.count();
 }
 
 QVariant RatingModel::data(const QModelIndex& index, int role) const
@@ -35,7 +36,7 @@ QVariant RatingModel::data(const QModelIndex& index, int role) const
 
     switch(role){
         case Qt::DisplayRole:
-            return mItems[index.row()]->property(mProperties[index.column() + 1]);
+            return mItems[index.row()]->property(mProperties[index.column()]);
 
         default:
             return QVariant();
@@ -56,7 +57,7 @@ QVariant RatingModel::headerData(int section,
         return QVariant();
 
     if (orientation == Qt::Horizontal)
-        return mProperties[section + 1];
+        return mProperties[section];
     else
         return (section + 1);
 
@@ -73,21 +74,19 @@ int RatingModel::rowCount(const QModelIndex& ) const
     return mItems.count();
 }
 
-bool RatingModel::addResult(QString userName, int time, int points)
+void RatingModel::addResult(QString userName, int time, int points)
 {
     QObject* object = new QObject(this);
-    int id = this->getId();
-    object->setProperty(mProperties[Columns::id], id);
-    object->setProperty(mProperties[UserName], userName);
-    object->setProperty(mProperties[RoundTime], QString::number(time));
-    object->setProperty(mProperties[Points], QString::number(points));
+    object->setProperty(mProperties[Columns::UserName], userName);
+    object->setProperty(mProperties[Columns::RoundTime], QString::number(time));
+    object->setProperty(mProperties[Columns::Points], QString::number(points));
     QString timeStr = QDateTime::currentDateTime().toString("dd MMM yyyy hh:mm");
-    object->setProperty(mProperties[DateTime], timeStr);
+    object->setProperty(mProperties[Columns::DateTime], timeStr);
 
     emit layoutAboutToBeChanged();
-    mItems[id] = object;
+    mItems<<object;
+    this->sortUsers();
     emit layoutChanged();
-
 
 }
 
@@ -110,11 +109,11 @@ bool RatingModel::loadData()
         foreach (const char* property, mProperties.values())
             userObject->setProperty(property, user.value(property));
 
-        int id =  userObject->property(mProperties[Columns::id]).toInt();
-
-        mItems[id] = userObject;
+        mItems<<userObject;
 
     }
+
+    this->sortUsers();
 
     return true;
 }
@@ -135,20 +134,29 @@ bool RatingModel::saveData()
     return true;
 }
 
-int RatingModel::getId() const
+void RatingModel::sortUsers()
 {
-    int id = 0;
-    while (mItems.contains(id))
-        id++;
+    std::sort(mItems.begin(), mItems.end(), [=](QObject* left, QObject* right){
 
-    return id;
+        bool leftOk, rightOk;
+        int lValue = left->property(mProperties[Columns::RoundTime]).toString().toInt(&leftOk);
+        int rValue = right->property(mProperties[Columns::RoundTime]).toString().toInt(&rightOk);
+
+        if (!leftOk || !rightOk)
+            return false;
+
+        return lValue < rValue;
+
+    });
+    if (mItems.count() > 10)
+        mItems.resize(10);
 }
 
 QJsonArray RatingModel::usersArray() const
 {
     QJsonArray users;
 
-    foreach (QObject* item, mItems.values()) {
+    foreach (QObject* item, mItems) {
         QVariantMap itemObject;
         foreach (const char* property, mProperties.values())
             itemObject[QString(property)] = item->property(property);

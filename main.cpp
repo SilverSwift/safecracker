@@ -11,7 +11,6 @@ int main(int argc, char** argv)
     QApplication::setOrganizationName("Alberts");
 
     presentation::MainWidget wgt;
-    wgt.resize(300, 300);
     wgt.show();
 
     app.exec();

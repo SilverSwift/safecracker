@@ -13,19 +13,22 @@ namespace fridge{
 }
 
 namespace presentation{
+
+class SettingsDialog;
+
 class MainWidget : public QMainWindow
 {
     Q_OBJECT
 public:
     explicit MainWidget(QWidget *parent = 0);
-
+    QSize sizeHint() const override;
 signals:
 
 private slots:
     void onGameStatsTriggered();
     void onFinished();
-    void startNewGame();
     void onUpdatePoints();
+    void startNewGame();
 
 private:
     void initComponents();
@@ -33,6 +36,7 @@ private:
     fridge::Fridge* pFridgeItem;
     domain::Stats* pStats;
     domain::RatingModel* pModel;
+    SettingsDialog* pSettings;
 
 };
 

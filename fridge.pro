@@ -17,19 +17,23 @@ SOURCES += \
     stats.cpp \
     startgamedialog.cpp \
     ratingmodel.cpp \
-    ratingdialog.cpp
+    ratingdialog.cpp \
+    settingsdialog.cpp \
+    settingsholder.cpp
 
 HEADERS += \
     mainwidget.h \
     fridge.h \
     galetteswitch.h \
     animatedswitch.h \
-    presentation_traits.h \
     menubar.h \
     stats.h \
     startgamedialog.h \
     ratingmodel.h \
-    ratingdialog.h
+    ratingdialog.h \
+    common_traits.h \
+    settingsdialog.h \
+    settingsholder.h
 
 RESOURCES += \
     main.qrc

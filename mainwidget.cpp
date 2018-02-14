@@ -1,9 +1,11 @@
 #include "mainwidget.h"
 #include "menubar.h"
 #include "fridge.h"
-#include "presentation_traits.h"
+#include "common_traits.h"
 #include "ratingdialog.h"
 #include "ratingmodel.h"
+#include "settingsdialog.h"
+#include "settingsholder.h"
 #include "stats.h"
 #include "startgamedialog.h"
 
@@ -19,9 +21,15 @@ MainWidget::MainWidget(QWidget *parent) : QMainWindow(parent)
   , pFridgeItem (new fridge::Fridge())
   , pStats (new domain::Stats(this))
   , pModel (new domain::RatingModel(this))
+  , pSettings(new SettingsDialog(this))
 {  
     this->initComponents();
     this->statusBar()->addPermanentWidget(new QLabel(intro, this->statusBar()));
+}
+
+QSize MainWidget::sizeHint() const
+{
+    return QSize(640, 480);
 }
 
 void MainWidget::onGameStatsTriggered()
@@ -82,6 +90,13 @@ void MainWidget::initComponents()
 
     connect(menu, &MenuBar::newGameTriggered,
             this, &MainWidget::startNewGame);
+
+    connect(menu, &MenuBar::gameStatsTriggered,
+            this, &MainWidget::onGameStatsTriggered);
+
+    connect(menu, &MenuBar::settingsTriggered,
+            pSettings, &SettingsDialog::exec);
+
     connect(pFridgeItem, &fridge::Fridge::finished,
             this, &MainWidget::onFinished);
 
@@ -94,7 +109,7 @@ void MainWidget::initComponents()
     connect(pStats, &domain::Stats::updatePoints,
             this, &MainWidget::onUpdatePoints);
 
-    connect(menu, &MenuBar::gameStatsTriggered,
-            this, &MainWidget::onGameStatsTriggered);
+    connect(pSettings, &SettingsDialog::durationChanged,
+            domain::SettingsHolder::instance(), &domain::SettingsHolder::onDurationChanged);
 
 }

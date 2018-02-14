@@ -1,4 +1,5 @@
 #include "ratingdialog.h"
+#include "common_traits.h"
 
 #include <QHeaderView>
 #include <QPushButton>
@@ -15,6 +16,7 @@ RatingDialog::RatingDialog(QAbstractItemModel* model, QWidget *parent) : QDialog
     view->setModel(model);
     QHeaderView* header = view->horizontalHeader();
     header->setSectionResizeMode(header->count() - 1, QHeaderView::Stretch);
+    view->sortByColumn(domain::Columns::RoundTime, Qt::DescendingOrder);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view);

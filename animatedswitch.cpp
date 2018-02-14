@@ -1,6 +1,7 @@
 #include "animatedswitch.h"
 #include "galetteswitch.h"
-#include "presentation_traits.h"
+#include "common_traits.h"
+#include "settingsholder.h"
 
 #include <QDebug>
 #include <QPropertyAnimation>
@@ -75,7 +76,8 @@ void AnimatedSwitch::initStateMachine()
     vState->assignProperty(item, "rotation", vRotation);
 
     QPropertyAnimation* animation = new QPropertyAnimation(item, "rotation");
-    animation->setDuration(duration);
+    animation->setDuration(domain::SettingsHolder::instance().duration());
+
     connect(animation, &QPropertyAnimation::finished,
             this, &AnimatedSwitch::onTransitionFinished);
 

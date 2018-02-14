@@ -1,5 +1,5 @@
 #include "startgamedialog.h"
-#include "presentation_traits.h"
+#include "common_traits.h"
 
 #include <QHBoxLayout>
 #include <QLabel>

@@ -19,6 +19,7 @@ signals:
     void helpTriggered();
     void newGameTriggered();
     void redoTriggered();
+    void settingsTriggered();
     void undoTriggered();
 
 public slots:
