@@ -10,6 +10,8 @@ class QAbstractState;
 class QState;
 class QStateMachine;
 
+namespace presentation{
+
 namespace fridge{
 
 class AnimatedSwitch;
@@ -36,7 +38,6 @@ signals:
 public slots:
     void initialize(int size);
     void onPressed(QPoint position);
-    void onTriggered(QPoint position);
     void redo();
     void undo();
 
@@ -49,36 +50,27 @@ private slots:
 
 private:
     bool isLocked() const;
-    void link(QAbstractState* state);
+    void makeTurn();
 
-    void onFinished();
-    void initStateMachine();
     AnimatedSwitch* item(QPoint point) const;
-    void lock(bool locked = true);
+    AnimatedSwitch* item(int row, int column) const;
     void press(QPoint point);
-    bool triggerColumn(QPoint position);
-    bool triggerRow(QPoint position);
-    bool tryTrigger(QPoint point);
-    bool tryTrigger(int row, int column);
 
-    void waveLeft(QState* parent);
-    void waveDown(QState* parent);
-    void waveRight(QState* parent);
-    void waveUp(QState* parent);
+    void makeWave(QVector<QPoint> points, QState* parent);
 
-    QGridLayout* grid;
-    QWidget *panel;
+    QGridLayout* pGgrid;
+    QWidget *pPanel;
     QVector< QVector<AnimatedSwitch*> > mItems;
     QPoint mPressedPosition;
     QStack <QPoint> mLastActions;
     QStack <QPoint> mCanceledActions;
 
-    bool mNeedToCheck = false;
-
     QStateMachine *pMachine;
 
 
 };
+
+}
 
 }
 #endif // FRIDGE_H

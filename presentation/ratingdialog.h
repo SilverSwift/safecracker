@@ -12,9 +12,7 @@ class RatingDialog : public QDialog
 public:
     explicit RatingDialog(QAbstractItemModel* model, QWidget *parent = 0);
     QSize sizeHint() const override;
-signals:
 
-public slots:
 };
 
 }

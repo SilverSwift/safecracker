@@ -7,12 +7,12 @@
 #include <QString>
 #include <QStandardPaths>
 
-namespace fridge{
-    const int hRotation = 0;
-    const int vRotation = -90;
-}
 
 namespace presentation{
+    namespace fridge{
+        const int hRotation = 0;
+        const int vRotation = -90;
+    }
     const int minSize = 4;
     const int maxSize = 10;
     const QString intro = QObject::tr("Press Game->New game to start");

@@ -4,10 +4,8 @@ using namespace presentation;
 
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QMessageBox>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QTabWidget>
 #include <QVBoxLayout>
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)

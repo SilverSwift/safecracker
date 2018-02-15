@@ -8,31 +8,31 @@
 #include <QSignalTransition>
 #include <QVBoxLayout>
 
-using namespace fridge;
+using namespace presentation::fridge;
 
 AnimatedSwitch::AnimatedSwitch(Qt::Orientation orientation,
                                QPoint position, QWidget *parent) :
     QWidget(parent)
-  , item(new GaletteSwitch)
-  , machine (new QStateMachine(this))
-  , hState  (new QState(machine))
-  , vState  (new QState(machine))
+  , pItem(new GaletteSwitch)
+  , pMachine (new QStateMachine(this))
+  , pHState  (new QState(pMachine))
+  , pVState  (new QState(pMachine))
   , mPosition (position)
 {  
     this->initComponents();
     this->initStateMachine();
 
-    connect(item, &GaletteSwitch::pressed,
+    connect(pItem, &GaletteSwitch::pressed,
             this, [=](){emit pressed(mPosition);});
 
-    QState* state = (orientation == Qt::Vertical) ? vState : hState;
-    machine->setInitialState(state);
-    machine->start();
+    QState* state = (orientation == Qt::Vertical) ? pVState : pHState;
+    pMachine->setInitialState(state);
+    pMachine->start();
 }
 
 Qt::Orientation AnimatedSwitch::orientation()
 {
-    if (machine->configuration().contains(hState))
+    if (pMachine->configuration().contains(pHState))
         return Qt::Horizontal;
     return Qt::Vertical;
 }
@@ -61,25 +61,25 @@ void AnimatedSwitch::onTransitionFinished()
 void AnimatedSwitch::initComponents()
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(item);
+    layout->addWidget(pItem);
 }
 
 void AnimatedSwitch::initStateMachine()
 {
-    hState->assignProperty(item, "rotation", hRotation);
-    vState->assignProperty(item, "rotation", vRotation);
+    pHState->assignProperty(pItem, "rotation", hRotation);
+    pVState->assignProperty(pItem, "rotation", vRotation);
 
-    QPropertyAnimation* animation = new QPropertyAnimation(item, "rotation");
+    QPropertyAnimation* animation = new QPropertyAnimation(pItem, "rotation");
     animation->setDuration(domain::SettingsHolder::instance()->duration());
 
     connect(animation, &QPropertyAnimation::finished,
             this, &AnimatedSwitch::onTransitionFinished);
 
     QSignalTransition* triggerToVTransition =
-            hState->addTransition(this, SIGNAL(triggerState()), vState);
+            pHState->addTransition(this, SIGNAL(triggerState()), pVState);
     triggerToVTransition->addAnimation(animation);
 
     QSignalTransition* triggerToHTransition =
-            vState->addTransition(this, SIGNAL(triggerState()), hState);
+            pVState->addTransition(this, SIGNAL(triggerState()), pHState);
     triggerToHTransition->addAnimation(animation);
 }

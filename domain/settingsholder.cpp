@@ -1,7 +1,6 @@
 #include "settingsholder.h"
 #include "common_traits.h"
 
-#include <QDebug>
 #include <QSettings>
 
 using namespace domain;

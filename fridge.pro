@@ -7,33 +7,39 @@ QT += \
     core \
     widgets
 
+INCLUDEPATH += \
+    presentation \
+    presentation/fridge \
+    domain
+
+
 SOURCES += \
     main.cpp \
-    mainwidget.cpp \
-    fridge.cpp \
-    galetteswitch.cpp \
-    animatedswitch.cpp \
-    menubar.cpp \
-    stats.cpp \
-    startgamedialog.cpp \
-    ratingmodel.cpp \
-    ratingdialog.cpp \
-    settingsdialog.cpp \
-    settingsholder.cpp
+    presentation/mainwidget.cpp \
+    presentation/fridge/fridge.cpp \
+    presentation/fridge/galetteswitch.cpp \
+    presentation/fridge/animatedswitch.cpp \
+    presentation/menubar.cpp \
+    domain/stats.cpp \
+    presentation/startgamedialog.cpp \
+    domain/ratingmodel.cpp \
+    presentation/ratingdialog.cpp \
+    presentation/settingsdialog.cpp \
+    domain\settingsholder.cpp
 
 HEADERS += \
-    mainwidget.h \
-    fridge.h \
-    galetteswitch.h \
-    animatedswitch.h \
-    menubar.h \
-    stats.h \
-    startgamedialog.h \
-    ratingmodel.h \
-    ratingdialog.h \
+    presentation/mainwidget.h \
+    presentation/fridge/fridge.h \
+    presentation/fridge/galetteswitch.h \
+    presentation/fridge/animatedswitch.h \
+    presentation/menubar.h \
+    domain/stats.h \
+    presentation/startgamedialog.h \
+    domain/ratingmodel.h \
+    presentation/ratingdialog.h \
     common_traits.h \
-    settingsdialog.h \
-    settingsholder.h
+    presentation/settingsdialog.h \
+    domain/settingsholder.h
 
 RESOURCES += \
     main.qrc

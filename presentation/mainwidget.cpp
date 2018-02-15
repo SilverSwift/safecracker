@@ -29,12 +29,17 @@ MainWidget::MainWidget(QWidget *parent) : QMainWindow(parent)
 
 QSize MainWidget::sizeHint() const
 {
-    return QSize(640, 480);
+    return QSize(800, 600);
 }
 
 void MainWidget::onGameStatsTriggered()
 {
     RatingDialog(pModel).exec();
+}
+
+void MainWidget::onSettingsTriggered()
+{
+    pSettings->exec();
 }
 
 void MainWidget::onFinished()
@@ -95,7 +100,7 @@ void MainWidget::initComponents()
             this, &MainWidget::onGameStatsTriggered);
 
     connect(menu, &MenuBar::settingsTriggered,
-            pSettings, &SettingsDialog::exec);
+            this, &MainWidget::onSettingsTriggered);
 
     connect(pFridgeItem, &fridge::Fridge::finished,
             this, &MainWidget::onFinished);
@@ -110,6 +115,7 @@ void MainWidget::initComponents()
             this, &MainWidget::onUpdatePoints);
 
     connect(pSettings, &SettingsDialog::durationChanged,
-            domain::SettingsHolder::instance(), &domain::SettingsHolder::onDurationChanged);
+            domain::SettingsHolder::instance(),
+            &domain::SettingsHolder::onDurationChanged);
 
 }

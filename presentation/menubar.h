@@ -31,8 +31,8 @@ private:
     QMenu* gameMenu();
     QMenu* helpMenu();
 
-    QAction* redo;
-    QAction* undo;
+    QAction* pRedo;
+    QAction* pUndo;
 
     void initComponents();
 };

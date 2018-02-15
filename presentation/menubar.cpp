@@ -10,12 +10,12 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent)
 
 void MenuBar::enableRedo(bool enabled)
 {
-    redo->setEnabled(enabled);
+    pRedo->setEnabled(enabled);
 }
 
 void MenuBar::enableUndo(bool enabled)
 {
-    undo->setEnabled(enabled);
+    pUndo->setEnabled(enabled);
 }
 
 QMenu* MenuBar::fileMenu()
@@ -32,8 +32,8 @@ QMenu* MenuBar::gameMenu()
     QMenu* game = new QMenu(tr("Game"), this);
 
     game->addAction(tr("New game"), this, SIGNAL(newGameTriggered()));
-    redo = game->addAction(tr("Redo"), this, SIGNAL(redoTriggered()), QKeySequence::Redo);
-    undo = game->addAction(tr("Undo"), this, SIGNAL(undoTriggered()), QKeySequence::Undo);
+    pRedo = game->addAction(tr("Redo"), this, SIGNAL(redoTriggered()), QKeySequence::Redo);
+    pUndo = game->addAction(tr("Undo"), this, SIGNAL(undoTriggered()), QKeySequence::Undo);
     game->addAction(tr("Game stats"), this, SIGNAL(gameStatsTriggered()));
 
     return game;

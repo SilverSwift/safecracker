@@ -1,13 +1,10 @@
 #include "ratingmodel.h"
 
-#include <QAbstractItemModel>
 #include <QDateTime>
-#include <QDebug>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QSharedPointer>
 
 #include <algorithm>
 

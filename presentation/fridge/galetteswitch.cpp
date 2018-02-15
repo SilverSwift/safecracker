@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QPixmap>
 
-using namespace fridge;
+using namespace presentation::fridge;
 
 GaletteSwitch::GaletteSwitch(QWidget *parent) : QWidget(parent)
 {
@@ -35,7 +35,7 @@ void GaletteSwitch::paintEvent(QPaintEvent* )
     painter.rotate(mAngle);
     painter.translate(-this->rect().center());
 
-    QPixmap pixmap(":/icons/switch2.png");
+    QPixmap pixmap(":/icons/switch.png");
     painter.drawPixmap(this->rect(), pixmap);
 }
 

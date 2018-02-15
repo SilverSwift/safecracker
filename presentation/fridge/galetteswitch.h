@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+namespace presentation{
 namespace fridge{
 
 class GaletteSwitch : public QWidget
@@ -32,6 +33,8 @@ private:
     int mAngle = 0;
 
 };
+
+}
 
 }
 #endif // GALETTESWITCH_H

@@ -8,11 +8,11 @@ namespace domain{
     class Stats;
 }
 
+
+namespace presentation{
 namespace fridge{
     class Fridge;
 }
-
-namespace presentation{
 
 class SettingsDialog;
 
@@ -27,6 +27,7 @@ signals:
 private slots:
     void onGameStatsTriggered();
     void onFinished();
+    void onSettingsTriggered();
     void onUpdatePoints();
     void startNewGame();
 
