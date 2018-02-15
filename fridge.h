@@ -6,6 +6,9 @@
 #include <QWidget>
 
 class QGridLayout;
+class QAbstractState;
+class QState;
+class QStateMachine;
 
 namespace fridge{
 
@@ -45,13 +48,23 @@ private slots:
     void checkState();
 
 private:
+    bool isLocked() const;
+    void link(QAbstractState* state);
 
+    void onFinished();
+    void initStateMachine();
+    AnimatedSwitch* item(QPoint point) const;
     void lock(bool locked = true);
     void press(QPoint point);
     bool triggerColumn(QPoint position);
     bool triggerRow(QPoint position);
     bool tryTrigger(QPoint point);
     bool tryTrigger(int row, int column);
+
+    void waveLeft(QState* parent);
+    void waveDown(QState* parent);
+    void waveRight(QState* parent);
+    void waveUp(QState* parent);
 
     QGridLayout* grid;
     QWidget *panel;
@@ -61,7 +74,8 @@ private:
     QStack <QPoint> mCanceledActions;
 
     bool mNeedToCheck = false;
-    bool mLocked = false;
+
+    QStateMachine *pMachine;
 
 
 };

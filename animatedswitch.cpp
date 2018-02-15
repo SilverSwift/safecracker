@@ -3,7 +3,6 @@
 #include "common_traits.h"
 #include "settingsholder.h"
 
-#include <QDebug>
 #include <QPropertyAnimation>
 #include <QStateMachine>
 #include <QSignalTransition>
@@ -24,7 +23,7 @@ AnimatedSwitch::AnimatedSwitch(Qt::Orientation orientation,
     this->initStateMachine();
 
     connect(item, &GaletteSwitch::pressed,
-            this, [=](){if (!mLocked) emit pressed(mPosition);});
+            this, [=](){emit pressed(mPosition);});
 
     QState* state = (orientation == Qt::Vertical) ? vState : hState;
     machine->setInitialState(state);
@@ -53,11 +52,6 @@ void AnimatedSwitch::setOrientation(Qt::Orientation orientation)
     this->trigger();
 }
 
-void AnimatedSwitch::lock(bool locked)
-{
-    mLocked = locked;
-}
-
 void AnimatedSwitch::onTransitionFinished()
 {
     mRotates = false;
@@ -76,7 +70,7 @@ void AnimatedSwitch::initStateMachine()
     vState->assignProperty(item, "rotation", vRotation);
 
     QPropertyAnimation* animation = new QPropertyAnimation(item, "rotation");
-    animation->setDuration(domain::SettingsHolder::instance().duration());
+    animation->setDuration(domain::SettingsHolder::instance()->duration());
 
     connect(animation, &QPropertyAnimation::finished,
             this, &AnimatedSwitch::onTransitionFinished);

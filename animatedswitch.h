@@ -20,7 +20,7 @@ public:
 public slots:
     void trigger();
     void setOrientation(Qt::Orientation orientation);
-    void lock(bool locked);
+//    void lock(bool locked);
 
 signals:
     void pressed(QPoint);
@@ -40,7 +40,6 @@ private:
     QState *vState;
     const QPoint mPosition;
     bool mRotates = false;
-    bool mLocked = false;
 
 };
 
