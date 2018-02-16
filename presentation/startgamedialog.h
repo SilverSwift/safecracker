@@ -13,14 +13,15 @@ class StartGameDialog : public QDialog
     Q_OBJECT
 public:
     explicit StartGameDialog(QWidget *parent = 0);
-    int fieldSize() const;
-    QString playerName() const;
+
+private slots:
+    void onAccepted();
 
 private:
     void initComponents();
 
     QSpinBox* pFieldSize;
-    QLineEdit* pPlayerName;
+    QLineEdit* pUserName;
 
 };
 

@@ -12,7 +12,6 @@ class Stats : public QObject
 public:
     explicit Stats(QObject *parent = 0);
 
-    QString name() const;
     int points() const;
     int gameTime() const;
     QString result();
@@ -25,14 +24,13 @@ public slots:
     void onFinished();
     void onPressed();
     void onStarted();
-    void setName(QString name);
+
 
 private:
     QTime mTime;
     int mGameTime;
     int mTurns;
     const int mMaxPoints = 10000;
-    QString mName;
     bool mStarted = false;
 };
 

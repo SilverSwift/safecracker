@@ -36,7 +36,7 @@ signals:
     void started();
 
 public slots:
-    void initialize(int size);
+    void initialize();
     void onPressed(QPoint position);
     void redo();
     void undo();

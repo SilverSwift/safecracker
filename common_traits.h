@@ -13,8 +13,8 @@ namespace presentation{
         const int hRotation = 0;
         const int vRotation = -90;
     }
-    const int minSize = 4;
-    const int maxSize = 10;
+    const int minFieldSize = 4;
+    const int maxFieldSize = 10;
     const QString intro = QObject::tr("Press Game->New game to start");
 
     const QString lastPlayerKey ("lastPlayerKey");
@@ -31,8 +31,13 @@ namespace domain{
 
 
     const int defaultDuration = 500;
+    const int defaultFieldSize = 4;
+
     const QString usersArrayKey ("Users");
     const QString durationKey ("Duration");
+    const QString fieldSizeKey("fieldSize");
+    const QString userNameKey("userName");
+
     const QString appData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     const QFileInfo appDataFile(QDir(appData), "data.json");
     const QString ratingFilePath(appDataFile.absoluteFilePath());

@@ -70,7 +70,9 @@ void AnimatedSwitch::initStateMachine()
     pVState->assignProperty(pItem, "rotation", vRotation);
 
     QPropertyAnimation* animation = new QPropertyAnimation(pItem, "rotation");
-    animation->setDuration(domain::SettingsHolder::instance()->duration());
+    animation->setDuration(settings->duration());
+    connect(settings, &domain::SettingsHolder::durationChanged,
+            animation, &QPropertyAnimation::setDuration);
 
     connect(animation, &QPropertyAnimation::finished,
             this, &AnimatedSwitch::onTransitionFinished);

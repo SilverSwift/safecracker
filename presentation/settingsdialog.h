@@ -3,7 +3,8 @@
 
 #include <QDialog>
 
-class QSpinBox;
+class QGroupBox;
+class QSlider;
 
 namespace presentation{
 
@@ -22,13 +23,18 @@ private slots:
     void onAccepted();
 
 private:
+    void initComponents();
+    QGroupBox* sliderBox(QSlider* slider, QString title);
+
+
     const int mMaxDuaration = 1500;
     const int mMaxDivider = 10;
     const int mMinDivider = 1;
 
     int mDuration;
 
-    QSpinBox* pSpinBox;
+    QSlider* pSpeed;
+    QSlider* pSize;
 
 
 };

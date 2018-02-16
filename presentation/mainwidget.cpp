@@ -45,24 +45,15 @@ void MainWidget::onSettingsTriggered()
 void MainWidget::onFinished()
 {
     pStats->onFinished();
-    pModel->addResult(pStats->name(), pStats->gameTime(), pStats->points());
+    pModel->addResult(settings->userName(), pStats->gameTime(), pStats->points());
     QMessageBox::information(this, tr("Completed!"), pStats->result());
     this->startNewGame();
 }
 
 void MainWidget::startNewGame()
 {
-
-    StartGameDialog dialog;
-    if (dialog.exec() == QDialog::Rejected)
-        return;
-
-    pStats->setName(dialog.playerName());
-
-    int size = dialog.fieldSize();
-
-    pFridgeItem->initialize(size);
-
+    if (StartGameDialog().exec()  != QDialog::Rejected)
+        pFridgeItem->initialize();
 }
 
 void MainWidget::onUpdatePoints()
@@ -115,7 +106,6 @@ void MainWidget::initComponents()
             this, &MainWidget::onUpdatePoints);
 
     connect(pSettings, &SettingsDialog::durationChanged,
-            domain::SettingsHolder::instance(),
-            &domain::SettingsHolder::onDurationChanged);
+            settings, &domain::SettingsHolder::setDuration);
 
 }

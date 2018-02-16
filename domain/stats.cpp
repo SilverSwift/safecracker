@@ -1,3 +1,4 @@
+#include "settingsholder.h"
 #include "stats.h"
 
 #include <QTimer>
@@ -7,13 +8,8 @@ using namespace domain;
 Stats::Stats(QObject *parent) : QObject(parent)
 {
     QTimer* timer = new QTimer(this);
-    timer->start(1000);
+    timer->start(200);
     connect(timer, &QTimer::timeout, this, &Stats::updatePoints);
-}
-
-QString Stats::name() const
-{
-    return mName;
 }
 
 int Stats::gameTime() const
@@ -40,21 +36,16 @@ void Stats::onStarted()
     mTurns = 0;
 }
 
-void Stats::setName(QString name)
-{
-    mName = name;
-}
-
 int Stats::points() const
 {
     int time = mGameTime ? mGameTime : mTime.elapsed()/1000;
-    return qMax(mMaxPoints - time - mTurns, 0);
+    return qMax((mMaxPoints - time - mTurns), 0);
 }
 
 QString Stats::result()
 {
     return tr("Congratulations %1 you've finished with %2 points!\r\n"
-              "You've did it in %3 seconds!").arg(mName).arg(this->points()).arg(mGameTime);
+              "You've did it in %3 seconds!").arg(settings->userName()).arg(this->points()).arg(mGameTime);
 }
 
 QString Stats::statusInfo()

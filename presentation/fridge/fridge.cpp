@@ -198,7 +198,7 @@ AnimatedSwitch *Fridge::item(int row, int column) const
     return this->item(QPoint(row, column));
 }
 
-void Fridge::initialize(int size)
+void Fridge::initialize()
 {
     mCanceledActions.clear();
     mLastActions.clear();
@@ -211,6 +211,7 @@ void Fridge::initialize(int size)
         row.clear();
     }
 
+    int size = settings->fieldSize();
     mItems.fill(QVector<AnimatedSwitch*>(size), size);
 
     for (int row = 0 ; row < size; row++){

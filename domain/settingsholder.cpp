@@ -5,33 +5,48 @@
 
 using namespace domain;
 
-Q_GLOBAL_STATIC(SettingsHolder,  settings)
+Q_GLOBAL_STATIC(SettingsHolder,  ptr)
 
+SettingsHolder::SettingsHolder(QObject* parent) : QObject(parent)
+{
+
+}
 
 int SettingsHolder::duration()
 {
-    return mDuration;
+    return QSettings().value(durationKey, defaultDuration).toInt();
 }
+
+QString SettingsHolder::userName()
+{
+    return QSettings().value(userNameKey).toString();
+}
+
+void SettingsHolder::setDuration(int value)
+{
+    QSettings().setValue(durationKey, value);
+    emit durationChanged(value);
+}
+
+void SettingsHolder::setFieldSize(int value)
+{
+    QSettings().setValue(fieldSizeKey, value);
+    emit fieldSizeChanged(value);
+}
+
+void SettingsHolder::setUserName(QString userName)
+{
+    QSettings().setValue(userNameKey, userName);
+    emit userNameChanged(userName);
+}
+
 
 SettingsHolder* SettingsHolder::instance()
 {
-    if (!settings()->mLoaded){
-        settings()->load();
-        settings()->mLoaded = true;
-    }
-    return settings();
+    return ptr();
 }
 
-void SettingsHolder::onDurationChanged(int duration)
+int SettingsHolder::fieldSize()
 {
-    mDuration = duration;
-    QSettings().setValue(durationKey, mDuration);
-    QSettings().sync();
+    return QSettings().value(fieldSizeKey, defaultFieldSize).toInt();
 }
-
-void SettingsHolder::load()
-{
-    QSettings settings;
-    mDuration = settings.value(durationKey, defaultDuration).toInt();
-}
-

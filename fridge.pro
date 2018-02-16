@@ -25,7 +25,7 @@ SOURCES += \
     domain/ratingmodel.cpp \
     presentation/ratingdialog.cpp \
     presentation/settingsdialog.cpp \
-    domain\settingsholder.cpp
+    domain/settingsholder.cpp
 
 HEADERS += \
     presentation/mainwidget.h \
