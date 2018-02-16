@@ -30,7 +30,7 @@ private:
     QTime mTime;
     int mGameTime;
     int mTurns;
-    const int mMaxPoints = 10000;
+    const int mMaxPoints = 5000;
     bool mStarted = false;
 };
 

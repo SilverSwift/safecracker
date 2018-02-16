@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPixmap>
+#include <QPushButton>
 #include <QState>
 #include <QStateMachine>
 
@@ -17,14 +18,57 @@
 using namespace presentation::fridge;
 
 Fridge::Fridge(QWidget *parent) : QWidget(parent)
-  , pGgrid (new QGridLayout())
   , pPanel(new QWidget(this))
+  , pGgrid (new QGridLayout(pPanel))
   , pMachine(nullptr)
+  , pRedoBtn (new QPushButton(this))
+  , pUndoBtn (new QPushButton(this))
+  , pRestartBtn (new QPushButton(tr("Restart"),this))
 {
-    pGgrid->setHorizontalSpacing(0);
-    pGgrid->setVerticalSpacing(0);
-    pPanel->setLayout(pGgrid);
     std::srand(unsigned(std::time(0)));
+
+    pUndoBtn->setObjectName("undo");
+    pRedoBtn->setObjectName("redo");
+    pRestartBtn->setObjectName("restart");
+
+    connect(this, &Fridge::canRedoChanged, pRedoBtn, &QPushButton::setVisible);
+    connect(this, &Fridge::canUndoChanged, pUndoBtn, &QPushButton::setVisible);
+    connect(pRedoBtn, &QPushButton::clicked, this, &Fridge::redo);
+    connect(pUndoBtn, &QPushButton::clicked, this, &Fridge::undo);
+    connect(pRestartBtn, &QPushButton::clicked, this, &Fridge::initialize);
+
+    this->setStyleSheet("QPushButton{"
+                        ""
+                        "   background-color: transparent;"
+                        "   background-repeat: no-repeat;"
+                        "   border-radius: 15px;"
+                        "   border: none;"
+                        "}"
+                        "QPushButton:hover{"
+                        "   background-color: #55f96b01;"
+                        "}"
+                        "QPushButton:pressed{"
+                        "   background-color: #aaf96b01;"
+                        "}"
+                        ""
+                        "QPushButton#undo{"
+                        "   border-image: url(:/icons/undo.png) 0 0 0 0 stretch stretch;"
+                        "}"
+                        "QPushButton#redo{"
+                        "   border-image: url(:/icons/redo.png) 0 0 0 0 stretch stretch;"
+                        "}"
+                        "QPushButton#restart{"
+                        "   color: white;"
+                        "   font: bold italic large;"
+                        "   font-size: 16px;"
+                        "   border-image: url(:/icons/textbutton.png) 0 0 0 0 stretch stretch;"
+                        "}"
+                        "QPushButton:hover#restart{"
+                        "   background-color: #aa3a443b;"
+                        "}"
+                        "QPushButton:pressed#restart{"
+                        "   background-color: #ff3a443b;"
+                        "}");
 
 }
 
@@ -99,6 +143,15 @@ void Fridge::resizeEvent(QResizeEvent *event)
     QRect safeRect(w*0.275, h*0.15, w*0.375, h*0.7);
 
     pPanel->setGeometry(safeRect);
+
+    int buttonWidth = 60;
+    int buttonHeight = 3*buttonWidth/4;
+
+    pUndoBtn->setGeometry(w - 2.2*buttonWidth, 0.05*h,buttonWidth, buttonHeight);
+    pRedoBtn->setGeometry(w - 1.1*buttonWidth, 0.05*h, buttonWidth,buttonHeight);
+
+    pRestartBtn->setGeometry(w - 2.2*buttonWidth, 0.05*h + 1.1*buttonHeight,
+                             2.1*buttonWidth, 0.9*buttonHeight);
 
     QWidget::resizeEvent(event);
 }
@@ -200,6 +253,9 @@ AnimatedSwitch *Fridge::item(int row, int column) const
 
 void Fridge::initialize()
 {
+    if (this->isLocked())
+        return;
+
     mCanceledActions.clear();
     mLastActions.clear();
 

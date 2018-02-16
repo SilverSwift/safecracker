@@ -8,7 +8,7 @@ using namespace domain;
 Stats::Stats(QObject *parent) : QObject(parent)
 {
     QTimer* timer = new QTimer(this);
-    timer->start(200);
+    timer->start(1000);
     connect(timer, &QTimer::timeout, this, &Stats::updatePoints);
 }
 
@@ -38,14 +38,17 @@ void Stats::onStarted()
 
 int Stats::points() const
 {
-    int time = mGameTime ? mGameTime : mTime.elapsed()/1000;
-    return qMax((mMaxPoints - time - mTurns), 0);
+    int time = mGameTime ? mGameTime : mTime.elapsed()/200;
+    return qMax((mMaxPoints - time - mTurns)*settings->fieldSize(), 0);
 }
 
 QString Stats::result()
 {
-    return tr("Congratulations %1 you've finished with %2 points!\r\n"
-              "You've did it in %3 seconds!").arg(settings->userName()).arg(this->points()).arg(mGameTime);
+    QString result = tr("Congratulations %1 you've finished with %2 points!"
+                        "\nYou did it in %3 seconds!")
+                        .arg(settings->userName()).arg(this->points()).arg(mGameTime);
+
+    return result;
 }
 
 QString Stats::statusInfo()

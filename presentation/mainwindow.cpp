@@ -1,4 +1,4 @@
-#include "mainwidget.h"
+#include "mainwindow.h"
 #include "menubar.h"
 #include "fridge.h"
 #include "common_traits.h"
@@ -17,32 +17,38 @@
 
 using namespace presentation;
 
-MainWidget::MainWidget(QWidget *parent) : QMainWindow(parent)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   , pFridgeItem (new fridge::Fridge())
   , pStats (new domain::Stats(this))
   , pModel (new domain::RatingModel(this))
-  , pSettings(new SettingsDialog(this))
 {  
+    this->setWindowTitle(tr("Safecracker Game"));
+    this->setMinimumSize(480, 320);
     this->initComponents();
-    this->statusBar()->addPermanentWidget(new QLabel(intro, this->statusBar()));
+    this->statusBar()->addPermanentWidget(new QLabel(tr("Press Game->New game to start"), this->statusBar()));
 }
 
-QSize MainWidget::sizeHint() const
+QSize MainWindow::sizeHint() const
 {
     return QSize(800, 600);
 }
 
-void MainWidget::onGameStatsTriggered()
+void MainWindow::onAboutTriggered()
+{
+    QMessageBox::information(this, tr("About"), tr("Made just for fun by Albert Perekhodchenko."));
+}
+
+void MainWindow::onGameStatsTriggered()
 {
     RatingDialog(pModel).exec();
 }
 
-void MainWidget::onSettingsTriggered()
+void MainWindow::onSettingsTriggered()
 {
-    pSettings->exec();
+    SettingsDialog().exec();
 }
 
-void MainWidget::onFinished()
+void MainWindow::onFinished()
 {
     pStats->onFinished();
     pModel->addResult(settings->userName(), pStats->gameTime(), pStats->points());
@@ -50,18 +56,18 @@ void MainWidget::onFinished()
     this->startNewGame();
 }
 
-void MainWidget::startNewGame()
+void MainWindow::startNewGame()
 {
     if (StartGameDialog().exec()  != QDialog::Rejected)
         pFridgeItem->initialize();
 }
 
-void MainWidget::onUpdatePoints()
+void MainWindow::onUpdatePoints()
 {
     this->statusBar()->showMessage(pStats->statusInfo());
 }
 
-void MainWidget::initComponents()
+void MainWindow::initComponents()
 {
     MenuBar* menu = new MenuBar();
     this->setMenuBar(menu);
@@ -85,16 +91,19 @@ void MainWidget::initComponents()
             pFridgeItem, &fridge::Fridge::undo);
 
     connect(menu, &MenuBar::newGameTriggered,
-            this, &MainWidget::startNewGame);
+            this, &MainWindow::startNewGame);
 
     connect(menu, &MenuBar::gameStatsTriggered,
-            this, &MainWidget::onGameStatsTriggered);
+            this, &MainWindow::onGameStatsTriggered);
 
     connect(menu, &MenuBar::settingsTriggered,
-            this, &MainWidget::onSettingsTriggered);
+            this, &MainWindow::onSettingsTriggered);
+
+    connect(menu, &MenuBar::aboutTriggered,
+            this, &MainWindow::onAboutTriggered);
 
     connect(pFridgeItem, &fridge::Fridge::finished,
-            this, &MainWidget::onFinished);
+            this, &MainWindow::onFinished);
 
     connect(pFridgeItem, &fridge::Fridge::started,
             pStats, &domain::Stats::onStarted);
@@ -103,9 +112,6 @@ void MainWidget::initComponents()
             pStats, &domain::Stats::onPressed);
 
     connect(pStats, &domain::Stats::updatePoints,
-            this, &MainWidget::onUpdatePoints);
-
-    connect(pSettings, &SettingsDialog::durationChanged,
-            settings, &domain::SettingsHolder::setDuration);
+            this, &MainWindow::onUpdatePoints);
 
 }

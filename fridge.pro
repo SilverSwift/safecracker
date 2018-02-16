@@ -15,7 +15,6 @@ INCLUDEPATH += \
 
 SOURCES += \
     main.cpp \
-    presentation/mainwidget.cpp \
     presentation/fridge/fridge.cpp \
     presentation/fridge/galetteswitch.cpp \
     presentation/fridge/animatedswitch.cpp \
@@ -25,10 +24,10 @@ SOURCES += \
     domain/ratingmodel.cpp \
     presentation/ratingdialog.cpp \
     presentation/settingsdialog.cpp \
-    domain/settingsholder.cpp
+    domain/settingsholder.cpp \
+    presentation/mainwindow.cpp
 
 HEADERS += \
-    presentation/mainwidget.h \
     presentation/fridge/fridge.h \
     presentation/fridge/galetteswitch.h \
     presentation/fridge/animatedswitch.h \
@@ -39,7 +38,11 @@ HEADERS += \
     presentation/ratingdialog.h \
     common_traits.h \
     presentation/settingsdialog.h \
-    domain/settingsholder.h
+    domain/settingsholder.h \
+    presentation/mainwindow.h
 
 RESOURCES += \
     main.qrc
+
+DISTFILES += \
+    translate_rus.ts

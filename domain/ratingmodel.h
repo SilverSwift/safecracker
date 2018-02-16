@@ -44,6 +44,14 @@ private:
         {Columns::DateTime, "DateTime"}
     };
 
+    const QHash <int, QString> mHeaderProperties = {
+        {Columns::UserName, tr("UserName")},
+        {Columns::RoundTime, tr("RoundTime")},
+        {Columns::Points, tr("Points")},
+        {Columns::DateTime, tr("DateTime")}
+    };
+
+
     bool mLoaded = false;
 };
 

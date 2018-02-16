@@ -31,12 +31,14 @@ void SettingsHolder::setDuration(int value)
 void SettingsHolder::setFieldSize(int value)
 {
     QSettings().setValue(fieldSizeKey, value);
+    QSettings().sync();
     emit fieldSizeChanged(value);
 }
 
 void SettingsHolder::setUserName(QString userName)
 {
     QSettings().setValue(userNameKey, userName);
+    QSettings().sync();
     emit userNameChanged(userName);
 }
 

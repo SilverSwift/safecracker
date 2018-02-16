@@ -15,9 +15,6 @@ namespace presentation{
     }
     const int minFieldSize = 4;
     const int maxFieldSize = 10;
-    const QString intro = QObject::tr("Press Game->New game to start");
-
-    const QString lastPlayerKey ("lastPlayerKey");
 }
 
 namespace domain{

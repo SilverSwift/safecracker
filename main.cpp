@@ -1,6 +1,7 @@
 #include <QApplication>
+#include <QTranslator>
 
-#include "mainwidget.h"
+#include "mainwindow.h"
 
 int main(int argc, char** argv)
 {
@@ -10,7 +11,11 @@ int main(int argc, char** argv)
     QApplication::setOrganizationDomain("alberts.com");
     QApplication::setOrganizationName("Alberts");
 
-    presentation::MainWidget wgt;
+    QTranslator translator;
+    translator.load(":/translate_rus.qm");
+    app.installTranslator(&translator);
+
+    presentation::MainWindow wgt;
     wgt.show();
 
     app.exec();

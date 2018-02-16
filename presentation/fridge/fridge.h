@@ -6,7 +6,7 @@
 #include <QWidget>
 
 class QGridLayout;
-class QAbstractState;
+class QPushButton;
 class QState;
 class QStateMachine;
 
@@ -58,15 +58,17 @@ private:
 
     void makeWave(QVector<QPoint> points, QState* parent);
 
-    QGridLayout* pGgrid;
     QWidget *pPanel;
+    QGridLayout* pGgrid;
     QVector< QVector<AnimatedSwitch*> > mItems;
     QPoint mPressedPosition;
     QStack <QPoint> mLastActions;
     QStack <QPoint> mCanceledActions;
-
     QStateMachine *pMachine;
 
+    QPushButton *pRedoBtn;
+    QPushButton *pUndoBtn;
+    QPushButton *pRestartBtn;
 
 };
 

@@ -54,7 +54,7 @@ QVariant RatingModel::headerData(int section,
         return QVariant();
 
     if (orientation == Qt::Horizontal)
-        return mProperties[section];
+        return mHeaderProperties[section];
     else
         return (section + 1);
 

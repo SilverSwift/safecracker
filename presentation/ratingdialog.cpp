@@ -11,12 +11,14 @@ using namespace presentation;
 RatingDialog::RatingDialog(QAbstractItemModel* model, QWidget *parent) : QDialog(parent)
 {
     this->setWindowTitle(tr("Top players"));
+    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
 
     QTableView *view = new QTableView(this);
     view->setModel(model);
     QHeaderView* header = view->horizontalHeader();
     header->setSectionResizeMode(header->count() - 1, QHeaderView::Stretch);
     view->sortByColumn(domain::Columns::RoundTime, Qt::DescendingOrder);
+    view->resizeColumnsToContents();
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view);
@@ -29,5 +31,5 @@ RatingDialog::RatingDialog(QAbstractItemModel* model, QWidget *parent) : QDialog
 
 QSize RatingDialog::sizeHint() const
 {
-    return QSize(400, 200);
+    return QSize(500, 200);
 }

@@ -27,14 +27,17 @@ void StartGameDialog::onAccepted()
 void StartGameDialog::initComponents()
 {
     this->setWindowTitle(tr("Start new game"));
+    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(new QLabel(tr("Player:")));
     layout->addWidget(pUserName);
     layout->addWidget(new QLabel(tr("Field size:")));
     layout->addWidget(pFieldSize);
+    layout->addStretch();
 
     QHBoxLayout* bottomRow = new QHBoxLayout();
+    bottomRow->setAlignment(Qt::AlignHCenter);
     QPushButton* start = new QPushButton(tr("Start"));
     QPushButton* abort = new QPushButton(tr("Abort"));
     bottomRow->addWidget(start);

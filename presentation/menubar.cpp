@@ -43,8 +43,7 @@ QMenu* MenuBar::helpMenu()
 {
     QMenu* help = new QMenu(tr("Help"), this);
 
-    help->addAction(tr("Help"), this, SIGNAL(helpTriggered()), QKeySequence::HelpContents);
-    help->addAction(tr("About"), this, SIGNAL(aboutTriggered()));
+    help->addAction(tr("About"), this, SIGNAL(aboutTriggered()), QKeySequence::HelpContents);
 
     return help;
 }

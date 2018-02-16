@@ -1,20 +1,23 @@
 #include "common_traits.h"
 #include "settingsdialog.h"
 #include "settingsholder.h"
-using namespace presentation;
 
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QSlider>
+#include <QSpinBox>
 #include <QVBoxLayout>
+
+using namespace presentation;
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
   , pSpeed (new QSlider(this))
   , pSize (new QSlider(this))
 {
     this->setWindowTitle(tr("Settings"));
+    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
 
     this->initComponents();
 }
@@ -27,7 +30,8 @@ QSize SettingsDialog::sizeHint() const
 void SettingsDialog::onAccepted()
 {
     int duration = mMaxDuaration/pSpeed->value();
-    emit durationChanged(duration);
+    settings->setDuration(duration);
+    settings->setFieldSize(pSize->value());
 }
 
 void SettingsDialog::initComponents()
@@ -37,7 +41,7 @@ void SettingsDialog::initComponents()
     pSpeed->setValue(mMaxDuaration/settings->duration());
 
     pSize->setMinimum(presentation::minFieldSize);
-    pSize->setMinimum(presentation::maxFieldSize);
+    pSize->setMaximum(presentation::maxFieldSize);
     pSize->setValue(settings->fieldSize());
 
 
@@ -66,15 +70,31 @@ QGroupBox*SettingsDialog::sliderBox(QSlider* slider, QString title)
 {
     slider->setOrientation(Qt::Horizontal);
     slider->setTickPosition(QSlider::TicksBelow);
-    slider->setTickInterval((slider->maximum() - slider->minimum())/5 );
-    QGroupBox* box = new QGroupBox(title, this);
-    QVBoxLayout* boxLayout = new QVBoxLayout(box);
-    boxLayout->addWidget(slider);
+    slider->setTickInterval(qMax((slider->maximum() - slider->minimum())/5, 1) );
 
-    QHBoxLayout* sliderBuddy = new QHBoxLayout(this);
+    QSpinBox* spinBox = new QSpinBox();
+    spinBox->setMinimum(slider->minimum());
+    spinBox->setMaximum(slider->maximum());
+    spinBox->setValue(slider->value());
+
+    connect(spinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            slider, &QSlider::setValue);
+    connect(slider, &QSlider::valueChanged, spinBox, &QSpinBox::setValue);
+
+    QHBoxLayout* spinBoxLayout = new QHBoxLayout();
+    spinBoxLayout->addStretch();
+    spinBoxLayout->addWidget(new QLabel(tr("Value:")));
+    spinBoxLayout->addWidget(spinBox);
+
+    QHBoxLayout* sliderBuddy = new QHBoxLayout();
     sliderBuddy->addWidget(new QLabel(tr("Min")));
     sliderBuddy->addStretch();
     sliderBuddy->addWidget(new QLabel(tr("Max")));
+
+    QGroupBox* box = new QGroupBox(title, this);
+    QVBoxLayout* boxLayout = new QVBoxLayout(box);
+    boxLayout->addLayout(spinBoxLayout);
+    boxLayout->addWidget(slider);
     boxLayout->addLayout(sliderBuddy);
 
     return box;
